@@ -5,6 +5,7 @@
 
 void creerFIchier();
 int recupereCSV();
+void binaire();
 int main(int args) {
     char nomFichierr[100] = "C:/Users/mkltr/CLionProjects/Tp5/testecriture";
 
@@ -45,8 +46,9 @@ int main(int args) {
     }
 
     fclose(fileGo);
-    creerFIchier();
-    recupereCSV();
+    //creerFIchier();
+    //recupereCSV();
+    binaire();
     return 0;
 }
 
@@ -130,5 +132,53 @@ int recupereCSV(){
 
 
     return 0;
+}
+
+void binaire(){
+    typedef struct {
+        char nom[50];
+        int age;
+
+    } personne;
+
+    FILE *f_texte = fopen("C:/Users/mkltr/CLionProjects/Tp5/test.csv", "r");
+    if (f_texte == NULL) {
+        printf("Impossible d'ouvrir le fichier texte\n");
+    }
+
+    // On lit les informations depuis le fichier texte et on les stocke dans une structure de données
+    personne personnes[3];
+    for (int i = 0; i < 3; i++) {
+        fscanf(f_texte, "%s %s %d", personnes[i].nom, &personnes[i].age);
+    }
+
+    fclose(f_texte);
+
+    // On écrit les informations dans un fichier binaire
+    FILE *f_binaire = fopen("personnes.bin", "wb");
+    if (f_binaire == NULL) {
+        printf("Impossible d'ouvrir le fichier binaire\n");
+
+    }
+
+    fwrite(personnes, sizeof(personne), 3, f_binaire);
+
+    fclose(f_binaire);
+
+    // On lit les informations depuis le fichier binaire et on les affiche
+    f_binaire = fopen("personnes.bin", "rb");
+    if (f_binaire == NULL) {
+        printf("Impossible d'ouvrir le fichier binaire\n");
+
+    }
+
+    personne personnes_lues[3];
+    fread(personnes_lues, sizeof(personne), 3, f_binaire);
+
+    for (int i = 0; i < 3; i++) {
+        printf("Personne %d : %s %s, %d ans\n", i+1, personnes_lues[i].nom,  personnes_lues[i].age);
+    }
+
+    fclose(f_binaire);
 }
 
